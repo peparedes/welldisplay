@@ -10,19 +10,48 @@
 
 #define RATE_OF_CHANGE 0.001
 
+@interface SubliminalScheduler : NSObject
+- (void)subliminalLoop;
+- (void)targetMethod;
+@end
+
+@implementation SubliminalScheduler
+
+- (void)subliminalLoop {
+    NSLog(@"Hello, World!");
+    
+    [NSTimer scheduledTimerWithTimeInterval:2.0
+                                     target:self
+                                     selector:@selector(targetMethod)
+                                     userInfo:nil
+                                     repeats:YES];
+}
+
+- (void)targetMethod {
+    NSLog(@"Hello, World!");
+}
+
+@end
+
+
+
 int main(int argc, const char * argv[]) {
     float strength = 0;
     int shouldIncrease = 0;
+    
+    SubliminalScheduler *subliminalScheduler = [SubliminalScheduler alloc];
+    subliminalScheduler.subliminalLoop;
 
+    
     
     CBBlueLightClient *client = [[CBBlueLightClient alloc] init];
     
     int time = 0;
 
-    while (TRUE) {
+    /*while (TRUE) {
         //NSLog(@"%d",time);
         time++;
-        if (time % 10000 >= 0 && time % 10000 < 500) {
+        if (time % 2 == 1) {
             //NSLog(@"ON");
             [MacGammaController setGammaWithRed:0 green:10 blue:0];
         }
@@ -30,28 +59,11 @@ int main(int argc, const char * argv[]) {
             //NSLog(@"OFF");
             CGDisplayRestoreColorSyncSettings();
         }
-    }
+    }*/
     
-    /*
-    while (TRUE) {
-        
-        if (strength != 0.0) { [client setStrength:strength commit:true]; }
-        [client setEnabled:(strength != 0.0)];
-        
-        
-        if (shouldIncrease) {
-            strength += RATE_OF_CHANGE;
-        } else {
-            strength -= RATE_OF_CHANGE;
-        }
-        
-        if (strength > 0.99) {
-            shouldIncrease = 0;
-        }
-        
-        if (strength < 0.01) {
-            shouldIncrease = 1;
-        }
-    } */
+    int userInput;
+    scanf("%i", &userInput);
+    NSLog(@"You typed %i.", userInput);
+    
     return 0;
 }
