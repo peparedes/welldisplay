@@ -31,12 +31,16 @@ static uint64_t nanos_to_abs(uint64_t nanos) {
 
 int main(int argc, const char * argv[]) {
     
+    // INITIALIZE VARIABLES
+    
     CBBlueLightClient *client = [[CBBlueLightClient alloc] init];
     int time = 0;
     
-    // Define time to wait.
-    uint64_t time_to_wait_subliminal = 1;
-    uint64_t time_to_wait_10 = 10 * NANOS_PER_SEC;
+    // Define wait times.
+    uint64_t time_to_wait_subliminal = 2 * NANOS_PER_USEC; // Value of 3 * NANOS_PER_USEC *IS* PERCEIVABLE
+    uint64_t time_to_wait_noticeable = 3 * NANOS_PER_SEC;
+    
+    // DO A TEST RUN:::
 
     // Set background screen to green.
     [MacGammaController setGammaWithRed:0 green:10 blue:0];
@@ -49,40 +53,50 @@ int main(int argc, const char * argv[]) {
     // Restore color settings.
     CGDisplayRestoreColorSyncSettings();
     
-    // Wait for 10 seconds.
+    // Wait for short but noticeable time.
     mach_timebase_info(&timebase_info);
     uint64_t now2 = mach_absolute_time();
-    mach_wait_until(now2 + time_to_wait_10);
+    mach_wait_until(now2 + time_to_wait_noticeable);
     
     // Set background screen to green.
     [MacGammaController setGammaWithRed:0 green:10 blue:0];
     
-    // Wait for 10 seconds.
+    // Wait for short but noticeable time.
     mach_timebase_info(&timebase_info);
     uint64_t now3 = mach_absolute_time();
-    mach_wait_until(now3 + time_to_wait_10);
+    mach_wait_until(now3 + time_to_wait_noticeable);
     
     // Restore color settings.
     CGDisplayRestoreColorSyncSettings();
     
     
-    // SUBLIMINAL INTERVENTION EXAMPLE:::
+    
+    
+    // SUBLIMINAL INTERVENTION STARTS HERE:::
     
     // Wait for 10 seconds.
     mach_timebase_info(&timebase_info);
     uint64_t now4 = mach_absolute_time();
-    mach_wait_until(now4 + time_to_wait_10);
+    mach_wait_until(now4 + time_to_wait_noticeable);
     
-    // Set background screen to green.
-    [MacGammaController setGammaWithRed:0 green:10 blue:0];
-    
-    // Super quick waiting.
-    mach_timebase_info(&timebase_info);
-    uint64_t now5 = mach_absolute_time();
-    mach_wait_until(now + time_to_wait_subliminal);
-
-    // Restore color settings.
-    CGDisplayRestoreColorSyncSettings();
+    unsigned int i;
+    for(i = 0; i < 100; i++) {
+        // Set background screen to green.
+        [MacGammaController setGammaWithRed:0 green:10 blue:0];
+        
+        // Super quick waiting.
+        mach_timebase_info(&timebase_info);
+        uint64_t now5 = mach_absolute_time();
+        mach_wait_until(now5 + time_to_wait_subliminal);
+        
+        // Restore color settings.
+        CGDisplayRestoreColorSyncSettings();
+        
+        // Super quick waiting.
+        mach_timebase_info(&timebase_info);
+        uint64_t now6 = mach_absolute_time();
+        mach_wait_until(now6 + time_to_wait_noticeable);
+    }
     
     return 0;
 }
