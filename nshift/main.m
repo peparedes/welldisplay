@@ -37,13 +37,13 @@ int main(int argc, const char * argv[]) {
     int time = 0;
     
     // Define wait times.
-    uint64_t time_to_wait_subliminal = 2 * NANOS_PER_USEC; // Value of 3 * NANOS_PER_USEC *IS* PERCEIVABLE
-    uint64_t time_to_wait_noticeable = 3 * NANOS_PER_SEC;
+    uint64_t time_to_wait_subliminal = 0.00005 * NANOS_PER_USEC; // Value of 3 * NANOS_PER_USEC *IS* PERCEIVABLE
+    uint64_t time_to_wait_noticeable = 5 * NANOS_PER_SEC;
     
     // DO A TEST RUN:::
 
     // Set background screen to green.
-    [MacGammaController setGammaWithRed:0 green:10 blue:0];
+    [MacGammaController setGammaWithRed:0 green:1 blue:0];
     
     // Wait until resetting settings.
     mach_timebase_info(&timebase_info);
@@ -59,7 +59,7 @@ int main(int argc, const char * argv[]) {
     mach_wait_until(now2 + time_to_wait_noticeable);
     
     // Set background screen to green.
-    [MacGammaController setGammaWithRed:0 green:10 blue:0];
+    [MacGammaController setGammaWithRed:0 green:1 blue:0];
     
     // Wait for short but noticeable time.
     mach_timebase_info(&timebase_info);
@@ -80,14 +80,33 @@ int main(int argc, const char * argv[]) {
     mach_wait_until(now4 + time_to_wait_noticeable);
     
     unsigned int i;
-    for(i = 0; i < 100; i++) {
+    float greenLevel = 0.75;
+    boolean_t isIncreasing = false;
+    for (i = 0; i < 100000; i++) {
+        
+        if (isIncreasing) {
+            greenLevel += 0.001;
+        }
+        else {
+            greenLevel -= 0.001;
+        }
+        
+        if (greenLevel < 0.65) {
+            isIncreasing = true;
+        }
+        if (greenLevel > 0.99) {
+            isIncreasing = false;
+        }
+        
         // Set background screen to green.
-        [MacGammaController setGammaWithRed:0 green:10 blue:0];
+        [MacGammaController setGammaWithRed:0 green:greenLevel blue:0];
         
         // Super quick waiting.
         mach_timebase_info(&timebase_info);
         uint64_t now5 = mach_absolute_time();
         mach_wait_until(now5 + time_to_wait_subliminal);
+        
+        /*
         
         // Restore color settings.
         CGDisplayRestoreColorSyncSettings();
@@ -96,7 +115,12 @@ int main(int argc, const char * argv[]) {
         mach_timebase_info(&timebase_info);
         uint64_t now6 = mach_absolute_time();
         mach_wait_until(now6 + time_to_wait_noticeable);
+         
+         */
     }
+    
+    // Restore color settings.
+    CGDisplayRestoreColorSyncSettings();
     
     return 0;
 }
